@@ -1,16 +1,16 @@
-const User = require('../models/user');
-const shortId = require('shortid');
-const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
-const sgMail = require('@sendgrid/mail'); // SENDGRID_API_KEY
+const User = require("../models/user");
+const shortId = require("shortid");
+const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt");
+const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const signup = (req, res) => {
-  // console.log(req.body);
-  User.findOne({ email: req.body.email }).exec((err, user) => {
+const signup = async function(req, res) {
+  try {
+    const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.status(400).json({
-        error: 'Email is taken'
+        error: "Email is taken"
       });
     }
 
@@ -26,41 +26,45 @@ const signup = (req, res) => {
         });
       }
       res.json({
-        message: 'Signup success! Please signin.'
+        message: "Signup success! Please signin."
       });
     });
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-const login = (req, res) => {
-  const { email, password } = req.body;
-  User.findOne({ email }).exec((err, user) => {
-    if (err || !user) {
+const login = async function(req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
       return res.status(400).json({
-        error: 'User with that email does not exist. Please signup.'
+        error: "User with that email does not exist. Please signup."
       });
     }
     if (!user.authenticate(password)) {
       return res.status(400).json({
-        error: 'Email and password do not match.'
+        error: "Email and password do not match."
       });
     }
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '90d'
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_LOGIN, {
+      expiresIn: "90d"
     });
-
     const { _id, name } = user;
     return res.send({
       token,
       session: { authenticated: `AUTHENTICATED`, id: _id, name }
     });
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-const signout = (req, res) => {
-  res.clearCookie('token');
+const signout = function(req, res) {
+  res.clearCookie("token");
   res.json({
-    message: 'Signout success'
+    message: "Signout success"
   });
 };
 
@@ -68,17 +72,18 @@ const requireSignin = expressJwt({
   secret: process.env.JWT_SECRET
 });
 
-const forgotPassword = (req, res) => {
-  const { email } = req.body;
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) {
+const forgotPassword = async function(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
       return res.status(401).json({
-        error: 'User with that email does not exist'
+        error: "User with that email does not exist"
       });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_RESET_PASSWORD, {
-      expiresIn: '10m'
+      expiresIn: "10m"
     });
 
     const emailData = {
@@ -105,21 +110,24 @@ const forgotPassword = (req, res) => {
         });
       }
     });
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-const preSignup = (req, res) => {
-  const { name, email, password } = req.body;
-  User.findOne({ email: email.toLowerCase() }, (err, user) => {
+const preSignup = async function(req, res) {
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
       return res.status(400).json({
-        error: 'Email is taken'
+        error: "Email is taken"
       });
     }
     const token = jwt.sign(
       { name, email, password },
       process.env.JWT_ACCOUNT_ACTIVATION,
-      { expiresIn: '10m' }
+      { expiresIn: "10m" }
     );
 
     const emailData = {
@@ -140,7 +148,9 @@ const preSignup = (req, res) => {
         message: `Email has been sent to ${email}. Follow the instructions to activate your account.`
       });
     });
-  });
+  } catch (e) {
+    console.log;
+  }
 };
 
 module.exports = {
