@@ -51,9 +51,15 @@ const login = async function(req, res) {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_LOGIN, {
       expiresIn: "90d"
     });
+
+    try {
+      await User.update({ email }, { $set: { token } });
+    } catch (e) {
+      console.log(e);
+    }
     const { _id, name } = user;
     return res.send({
-      token,
+      token: user.token,
       session: { authenticated: `AUTHENTICATED`, id: _id, name }
     });
   } catch (e) {
