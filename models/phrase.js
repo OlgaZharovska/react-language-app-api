@@ -1,14 +1,14 @@
 var mongoose = require("mongoose");
 var Phrase = mongoose.model("Phrase", {
   phrase: {
-    type: String
+    type: String,
   },
   translation: {
-    type: String
+    type: String,
   },
   owner: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 module.exports = Phrase;

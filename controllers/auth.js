@@ -59,7 +59,7 @@ const login = async function(req, res) {
     }
     const { _id, name } = user;
     return res.send({
-      token: user.token,
+      token,
       session: { authenticated: `AUTHENTICATED`, id: _id, name }
     });
   } catch (e) {
@@ -73,10 +73,6 @@ const signout = function(req, res) {
     message: "Signout success"
   });
 };
-
-const requireSignin = expressJwt({
-  secret: process.env.JWT_SECRET
-});
 
 const forgotPassword = async function(req, res) {
   try {
