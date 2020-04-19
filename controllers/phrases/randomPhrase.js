@@ -1,4 +1,4 @@
-const phraseToTrain = async function (req, res) {
+const randomPhrase = async function (req, res) {
   try {
     const makeRandomNum = function (min, max) {
       return 0 + Math.floor(Math.random() * (max + 1 - min));
@@ -24,7 +24,6 @@ const phraseToTrain = async function (req, res) {
     console.log(e);
   }
 };
-
 module.exports = {
-  phraseToTrain,
+  randomPhrase,
 };

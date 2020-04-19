@@ -5,12 +5,12 @@ const expressJwt = require("express-jwt");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const signup = async function(req, res) {
+const signup = async function (req, res) {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.status(400).json({
-        error: "Email is taken"
+        error: "Email is taken",
       });
     }
 
@@ -19,14 +19,14 @@ const signup = async function(req, res) {
     let profile = `${process.env.CLIENT_URL}/profile/${username}`;
 
     let newUser = new User({ name, email, password, profile, username });
-    newUser.save(err => {
+    newUser.save((err) => {
       if (err) {
         return res.status(401).json({
-          error: err
+          error: err,
         });
       }
       res.json({
-        message: "Signup success! Please signin."
+        message: "Signup success! Please signin.",
       });
     });
   } catch (e) {
@@ -34,22 +34,22 @@ const signup = async function(req, res) {
   }
 };
 
-const login = async function(req, res) {
+const login = async function (req, res) {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
-        error: "User with that email does not exist. Please signup."
+        error: "User with that email does not exist. Please signup.",
       });
     }
     if (!user.authenticate(password)) {
       return res.status(400).json({
-        error: "Email and password do not match."
+        error: "Email and password do not match.",
       });
     }
     const token = jwt.sign({ _id: user._id }, process.env.JWT_LOGIN, {
-      expiresIn: "90d"
+      expiresIn: "90d",
     });
 
     try {
@@ -60,32 +60,32 @@ const login = async function(req, res) {
     const { _id, name } = user;
     return res.send({
       token,
-      session: { authenticated: `AUTHENTICATED`, id: _id, name }
+      session: { authenticated: `AUTHENTICATED`, id: _id, name },
     });
   } catch (e) {
     console.log(e);
   }
 };
 
-const signout = function(req, res) {
+const signout = function (req, res) {
   res.clearCookie("token");
   res.json({
-    message: "Signout success"
+    message: "Signout success",
   });
 };
 
-const forgotPassword = async function(req, res) {
+const forgotPassword = async function (req, res) {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({
-        error: "User with that email does not exist"
+        error: "User with that email does not exist",
       });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_RESET_PASSWORD, {
-      expiresIn: "10m"
+      expiresIn: "10m",
     });
 
     const emailData = {
@@ -98,16 +98,16 @@ const forgotPassword = async function(req, res) {
       <hr />
       <p>This email may contain sensetive information</p>
       <p>https://fancyapp.com</p>
-  `
+  `,
     };
 
     return user.updateOne({ resetPasswordLink: token }, (err, success) => {
       if (err) {
         return res.json({ error: errorHandler(err) });
       } else {
-        sgMail.send(emailData).then(sent => {
+        sgMail.send(emailData).then((sent) => {
           return res.json({
-            message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`
+            message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
           });
         });
       }
@@ -117,13 +117,13 @@ const forgotPassword = async function(req, res) {
   }
 };
 
-const preSignup = async function(req, res) {
+const preSignup = async function (req, res) {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
       return res.status(400).json({
-        error: "Email is taken"
+        error: "Email is taken",
       });
     }
     const token = jwt.sign(
@@ -142,12 +142,12 @@ const preSignup = async function(req, res) {
           <hr />
           <p>This email may contain sensetive information</p>
           <p>https://fancyapp.com</p>
-      `
+      `,
     };
 
-    sgMail.send(emailData).then(sent => {
+    sgMail.send(emailData).then((sent) => {
       return res.json({
-        message: `Email has been sent to ${email}. Follow the instructions to activate your account.`
+        message: `Email has been sent to ${email}. Follow the instructions to activate your account.`,
       });
     });
   } catch (e) {
@@ -161,5 +161,5 @@ module.exports = {
   signout,
   requireSignin,
   forgotPassword,
-  preSignup
+  preSignup,
 };

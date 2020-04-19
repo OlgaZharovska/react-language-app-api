@@ -6,7 +6,7 @@ var Phrase = mongoose.model("Phrase", {
   translation: {
     type: String,
   },
-  owner: {
+  userName: {
     type: String,
   },
 });
