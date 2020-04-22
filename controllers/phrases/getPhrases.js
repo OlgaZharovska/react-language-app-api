@@ -1,4 +1,4 @@
-const Phrase = require("../models/phrase");
+const Phrase = require("../../models/phrase");
 
 const getPhrases = async function (req, res) {
   const { userName } = req.body;

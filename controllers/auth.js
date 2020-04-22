@@ -159,7 +159,7 @@ module.exports = {
   signup,
   login,
   signout,
-  requireSignin,
+
   forgotPassword,
   preSignup,
 };

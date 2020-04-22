@@ -1,15 +1,16 @@
-const Phrase = require("../models/phrase");
+const Phrase = require("../../models/phrase");
 
 const postPhrase = async function (req, res) {
-  const { userName, phraseSet } = req.body;
+  const { phrase, translation, userName } = req.body;
+  console.log(userName);
   const phraseToSave = new Phrase({
+    phrase,
+    translation,
     userName,
-    phrase: phraseSet.phrase,
-    translation: phraseSet.translation,
   });
   try {
     await phraseToSave.save();
-    return res.status(200);
+    return res.send({ suces: "suces" });
   } catch (e) {
     return res.status(400).json({
       error: "Email is taken",

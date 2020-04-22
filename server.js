@@ -8,6 +8,7 @@ require("dotenv").config();
 
 const appRoutes = require("./routes/app");
 const authRoutes = require("./routes/auth");
+const phrasesRoutes = require("./routes/phrases");
 const tokenVerification = require("./routes/auth");
 
 mongoose
@@ -15,7 +16,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
   })
   .then(() => console.log("DB connected"));
 
@@ -31,9 +32,10 @@ if (process.env.NODE_ENV == "development") {
 }
 
 app.use("/", authRoutes);
-app.use("/", authRoutes);
+app.use("/", appRoutes);
+app.use("/", phrasesRoutes);
 
-app.use(tokenVerification);
+// app.use(tokenVerification);
 
 const port = process.env.PORT || 7777;
 app.listen(port, () => {

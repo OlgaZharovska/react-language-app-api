@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   preSignup,
@@ -6,33 +6,29 @@ const {
   login,
   signout,
   requireSignin,
-  forgotPassword
-} = require('../controllers/auth');
-const runValidation = require('../validators');
+  forgotPassword,
+} = require("../controllers/auth");
+const runValidation = require("../validators");
 const {
   userSignupValidator,
   userSigninValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
-  preSignUpValidator
-} = require('../validators/auth');
+  preSignUpValidator,
+} = require("../validators/auth");
 
-router.post('/signup', userSignupValidator, runValidation, signup);
-router.post('/login', userSigninValidator, runValidation, login);
+router.post("/signup", userSignupValidator, runValidation, signup);
+router.post("/login", userSigninValidator, runValidation, login);
 router.post(
-  '/request-verification',
+  "/request-verification",
 
   preSignup
 );
-router.get('/signout', signout);
-router.get('/secret', requireSignin, (req, res) => {
-  res.json({
-    message: 'you have access to secret page'
-  });
-});
-router.put('/reset-password');
+router.get("/signout", signout);
+
+router.put("/reset-password");
 router.put(
-  '/forgot-password',
+  "/forgot-password",
   forgotPasswordValidator,
   runValidation,
   forgotPassword
