@@ -1,20 +1,21 @@
+const Token = require("../../models/token");
+const User = require("../../models/user");
+
 const verify = async (req, res) => {
-  if (!req.params.token)
+  if (!req.query.token)
     return res
       .status(400)
       .json({ message: "We were unable to find a user for this token." });
 
   try {
     // Find a matching token
-    const token = await Token.findOne({ token: req.params.token });
+    const token = await Token.findOne({ token: req.query.token });
 
     if (!token)
-      return res
-        .status(400)
-        .json({
-          message:
-            "We were unable to find a valid token. Your token my have expired.",
-        });
+      return res.status(400).json({
+        message:
+          "We were unable to find a valid token. Your token my have expired.",
+      });
 
     // If we found a token, find a matching user
     User.findOne({ _id: token.userId }, (err, user) => {
@@ -39,4 +40,8 @@ const verify = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  verify,
 };
