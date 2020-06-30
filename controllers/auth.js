@@ -5,34 +5,34 @@ const expressJwt = require("express-jwt");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const signup = async function (req, res) {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      return res.status(400).json({
-        error: "Email is taken",
-      });
-    }
+// const signup = async function (req, res) {
+//   try {
+//     const user = await User.findOne({ email: req.body.email });
+//     if (user) {
+//       return res.status(400).json({
+//         error: "Email is taken",
+//       });
+//     }
 
-    const { name, email, password } = req.body;
-    let username = shortId.generate();
-    let profile = `${process.env.CLIENT_URL}/profile/${username}`;
+//     const { name, email, password } = req.body;
+//     let username = shortId.generate();
+//     let profile = `${process.env.CLIENT_URL}/profile/${username}`;
 
-    let newUser = new User({ name, email, password, profile, username });
-    newUser.save((err) => {
-      if (err) {
-        return res.status(401).json({
-          error: err,
-        });
-      }
-      res.json({
-        message: "Signup success! Please signin.",
-      });
-    });
-  } catch (e) {
-    console.log(e);
-  }
-};
+//     let newUser = new User({ name, email, password, profile, username });
+//     newUser.save((err) => {
+//       if (err) {
+//         return res.status(401).json({
+//           error: err,
+//         });
+//       }
+//       res.json({
+//         message: "Signup success! Please signin.",
+//       });
+//     });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
 const login = async function (req, res) {
   try {
@@ -156,7 +156,6 @@ const preSignup = async function (req, res) {
 };
 
 module.exports = {
-  signup,
   login,
   signout,
 
