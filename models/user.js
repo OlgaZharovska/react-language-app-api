@@ -79,9 +79,7 @@ userSchema.methods = {
     let payload = {
       id: this._id,
       email: this.email,
-      username: this.username,
-      firstName: this.firstName,
-      lastName: this.lastName,
+      name: this.name,
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET, {

@@ -2,12 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { signup } = require("../controllers/authenticationService/signup");
 const { verify } = require("../controllers/authenticationService/verify");
-const {
-  preSignup,
-  login,
-  signout,
-  forgotPassword,
-} = require("../controllers/auth");
+const { login } = require("../controllers/authenticationService/login");
+const { preSignup, signout, forgotPassword } = require("../controllers/auth");
 const runValidation = require("../validators");
 const {
   userSignupValidator,
@@ -17,7 +13,7 @@ const {
   preSignUpValidator,
 } = require("../validators/auth");
 
-router.post("/login", userSigninValidator, runValidation, login);
+router.post("/login", login);
 
 router.post("/signup", signup);
 router.post("/verify", verify);
