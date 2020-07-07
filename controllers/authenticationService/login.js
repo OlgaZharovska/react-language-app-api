@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+const { generateRefreshToken } = require("./generateRefreshToken");
+
 const User = require("../../models/user");
 
 login = async (req, res) => {
@@ -25,10 +28,18 @@ login = async (req, res) => {
         message: "Your account has not been verified.",
       });
     delete user.password;
+    console.log(user);
+    const refreshToken = await generateRefreshToken(user);
+    console.log(refreshToken);
+    const JWTtoken = jwt.sign(
+      { sub: user.id, role: user.role },
+      process.env.JWT_SECRET
+    );
 
     // Login successful, write token, and send back user
     res.status(200).json({
-      token: user.generateJWT(),
+      JWTtoken,
+      refreshToken,
       user,
     });
   } catch (error) {
