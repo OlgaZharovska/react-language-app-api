@@ -27,20 +27,18 @@ login = async (req, res) => {
         type: "not-verified",
         message: "Your account has not been verified.",
       });
-    delete user.password;
-    console.log(user);
+    const { _id, name } = user;
+
     const refreshToken = await generateRefreshToken(user);
-    console.log(refreshToken);
     const JWTtoken = jwt.sign(
       { sub: user.id, role: user.role },
       process.env.JWT_SECRET
     );
 
-    // Login successful, write token, and send back user
     res.status(200).json({
       JWTtoken,
       refreshToken,
-      user,
+      user: { id: _id, name, email },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
