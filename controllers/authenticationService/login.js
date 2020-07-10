@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { generateRefreshToken } = require("./generateRefreshToken");
+const { generateAccessToken } = require("./generateAccessToken");
 
 const User = require("../../models/user");
 
@@ -30,13 +31,10 @@ login = async (req, res) => {
     const { _id, name } = user;
 
     const refreshToken = await generateRefreshToken(user);
-    const JWTtoken = jwt.sign(
-      { sub: user.id, role: user.role },
-      process.env.JWT_SECRET
-    );
+    const accessToken = generateAccessToken(user);
 
     res.status(200).json({
-      JWTtoken,
+      accessToken,
       refreshToken,
       user: { id: _id, name, email },
     });

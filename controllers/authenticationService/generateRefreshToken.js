@@ -17,4 +17,4 @@ function randomTokenString() {
   return crypto.randomBytes(40).toString("hex");
 }
 
-module.exports = { generateRefreshToken };
+module.exports = generateRefreshToken;
