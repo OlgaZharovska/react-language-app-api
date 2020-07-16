@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const { generateRefreshToken } = require("./generateRefreshToken");
-const { generateAccessToken } = require("./generateAccessToken");
+const generateRefreshToken = require("./generateRefreshToken");
+const generateAccessToken = require("./generateAccessToken");
 
 const User = require("../../models/user");
 
@@ -31,13 +31,14 @@ login = async (req, res) => {
     const { _id, name } = user;
 
     const refreshToken = await generateRefreshToken(user);
-    const accessToken = generateAccessToken(user);
-
-    res.status(200).json({
-      accessToken,
-      refreshToken,
-      user: { id: _id, name, email },
-    });
+    try {
+      const accessToken = await generateAccessToken(user);
+      res.status(200).json({
+        accessToken,
+        refreshToken,
+        user: { id: _id, name, email },
+      });
+    } catch (e) {}
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

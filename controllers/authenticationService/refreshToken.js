@@ -1,15 +1,19 @@
 const RefreshToken = require("../../models/refreshToken");
+const User = require("../../models/user");
+
 const generateRefreshToken = require("./generateRefreshToken");
 const generateAccessToken = require("./generateAccessToken");
 async function refreshToken(token) {
   const refreshToken = await getRefreshToken(token);
   const { user } = refreshToken;
-  const newRefreshToken = generateRefreshToken(user);
+  const userModel = await User.findById(user);
+  const newRefreshToken = await generateRefreshToken(userModel);
   refreshToken.revoked = Date.now();
   refreshToken.replacedByToken = newRefreshToken.token;
   await refreshToken.save();
-  const jwtToken = generateAccessToken(user);
-  const { id } = user;
+  const jwtToken = await generateAccessToken(userModel);
+  console.log(jwtToken);
+  const { id } = userModel;
   return {
     id,
     jwtToken,
