@@ -25,12 +25,13 @@ function refreshToken(req, res) {
 //   resetPasswordValidator,
 //   preSignUpValidator,
 // } = require("../validators/auth");
-router.get(
-  "/:id",
-  authenticationService.verifyAccessToken,
-  authorize(),
-  getById
-);
+
+// router.get(
+//   "/:id",
+//   authenticationService.verifyAccessToken,
+//   authorize(),
+//   getById
+// );
 
 // router.get("/get-all", authorize(Role.Admin), getAll);
 

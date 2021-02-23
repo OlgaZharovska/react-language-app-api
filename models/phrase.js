@@ -6,6 +6,9 @@ var Phrase = mongoose.model("Phrase", {
   translation: {
     type: String,
   },
+  category: {
+    type: String,
+  },
   userName: {
     type: String,
   },

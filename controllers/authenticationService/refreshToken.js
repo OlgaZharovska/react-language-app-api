@@ -12,7 +12,6 @@ async function refreshToken(token) {
   refreshToken.replacedByToken = newRefreshToken.token;
   await refreshToken.save();
   const jwtToken = await generateAccessToken(userModel);
-  console.log(jwtToken);
   const { id } = userModel;
   return {
     id,
@@ -22,10 +21,7 @@ async function refreshToken(token) {
 }
 
 async function getRefreshToken(token) {
-  try {
-  } catch (error) {}
   const refreshToken = await RefreshToken.findOne({ token });
-  console.log(refreshToken);
   if (!refreshToken) throw "No token";
   if (Date.now() >= refreshToken.expires && refreshToken.revoked)
     throw "Expired token";
